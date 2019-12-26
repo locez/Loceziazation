@@ -43,7 +43,9 @@
        ;;unicode           ; extended unicode support for various languages
        vc-gutter         ; vcs diff in the fringe
        vi-tilde-fringe   ; fringe tildes to mark beyond EOB
-       window-select     ; visually switch windows
+       (window-select
+        +switch-window
+        +numbers)     ; visually switch windows
        workspaces        ; tab emulation, persistence & separate workspaces
 
        :editor
