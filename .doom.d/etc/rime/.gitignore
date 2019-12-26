@@ -1,6 +1,6 @@
 build/
 installation.yaml
-luna_pinyin.userdb/
+luna_pinyin.userdb*
 user.yaml
 .DS_Store
 .idea
