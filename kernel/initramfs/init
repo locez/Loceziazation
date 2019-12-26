@@ -1,0 +1,25 @@
+#!/bin/busybox sh
+
+rescue_shell(){
+	echo 'something went wrong, Dropping into a shell.'
+	sh
+}
+mount -t proc none /proc
+mount -t sysfs none /sys
+mount -t devtmpfs none /dev
+
+lvm vgscan --mknodes
+lvm lvchange -a ly locez/btrfs
+lvm lvchange -a ly locez/swap
+lvm vgscan --mknodes
+
+
+mount -o rw,subvol=gentoo /dev/locez/btrfs /newroot || rescue_shell
+echo 'mounted rootfs'
+
+printf '%u:%u\n' $(stat -L -c '0x%t 0x%T' /dev/locez/swap) > /sys/power/resume || rescue_shell
+echo 'resume dev'
+
+umount /dev /proc /sys
+exec switch_root /newroot /sbin/init
+
