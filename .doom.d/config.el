@@ -68,3 +68,8 @@
                                     :heigt 1.0
                                     :v-adjust -0.2
                                     :face all-the-icons-blue))))
+
+
+
+(map! :leader :desc "Switch buffer" "," 'switch-to-buffer)
+(map! :leader :desc "Switch workspace buffer" "<" 'persp-switch-to-buffer)
