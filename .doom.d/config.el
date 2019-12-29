@@ -3,6 +3,7 @@
 ;; Place your private configuration here
 ;;(set-popup-rule! "Treemacs\-*" :ignore t :quit nil :ttl nil :autosave t :side 'left)
 
+(setq lsp-ui-doc-use-webkit t)
 
 (use-package! liberime-config
   :init
