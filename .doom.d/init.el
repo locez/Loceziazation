@@ -17,8 +17,10 @@
        ;;helm              ; the *other* search engine for love and life
        ;;ido               ; the other *other* search engine...
        (ivy
+        +childframe
+        +fuzzy
         +icons
-        +fuzzy)
+        +prescient)
                                         ; a search engine for love and life
 
        :ui
