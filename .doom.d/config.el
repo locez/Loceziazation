@@ -4,7 +4,6 @@
 ;;(set-popup-rule! "Treemacs\-*" :ignore t :quit nil :ttl nil :autosave t :side 'left)
 (load! "lib/tools")
 
-(setq lsp-ui-doc-use-webkit t)
 
 (use-package! liberime-config
   :init
