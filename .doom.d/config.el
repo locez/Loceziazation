@@ -92,7 +92,8 @@
         telega-chat-button-width 47)
 
   (add-hook! telega-chat-mode
-    (visual-line-mode t))
+    (visual-line-mode t)
+    ((lambda () (run-at-time nil nil #'activate-input-method "pyim"))))
 
   (after! all-the-icons
     (add-to-list 'all-the-icons-mode-icon-alist
