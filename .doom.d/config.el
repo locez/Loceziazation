@@ -10,6 +10,9 @@
   (setq liberime-user-data-dir (concat doom-private-dir "etc/rime")))
 
 (use-package! pyim
+  :init
+  (setq pyim-title "ㄓ")
+
   :commands pyim-convert-string-at-point
   :bind
   (("M-]" . pyim-convert-string-at-point))
@@ -27,46 +30,31 @@
            :file
            ,(expand-file-name (concat doom-private-dir "etc/pyim/pyim-bigdict.pyim.gz")))))
 
+  (defun func-call (fn-list)
+    (if (not fn-list)
+        nil
+      (let ((is-hit nil))
+        (setq is-hit (funcall (car fn-list)))
+        (if is-hit
+            t
+          (func-call (cdr fn-list))))))
 
-  ;; (defun func-call (fn-list)
-  ;;   (if (not fn-list)
-  ;;       nil
-  ;;     (let ((is-hit nil))
-  ;;       (setq is-hit (funcall (car fn-list)))
-  ;;       (if is-hit
-  ;;           t
-  ;;         (func-call (cdr fn-list))))))
-
-  ;; (defun pyim-switch-rules ()
-  ;;   (if (derived-mode-p 'telega-chat-mode)
-  ;;       nil
-  ;;     (func-call '(pyim-probe-dynamic-english
-  ;;                   pyim-probe-isearch-mode
-  ;;                   pyim-probe-program-mode
-  ;;                   pyim-probe-org-structure-template)))
-
-
-
-
-  (setq pyim-local-variable-list
-        (delete 'pyim-english-input-switch-functions pyim-local-variable-list))
-
-  (add-hook! telega-chat-mode
-    (setq pyim-english-input-switch-functions
-          '(pyim-probe-program-mode
-            pyim-probe-isearch-mode)))
+  (defun pyim-switch-rules ()
+    (let ((rule-list '(pyim-probe-isearch-mode pyim-probe-program-mode)))
+      (if (not (derived-mode-p 'telega-chat-mode))
+          (progn
+            (push 'pyim-probe-dynamic-english rule-list)
+            (push 'pyim-probe-org-structure-template rule-list)))
+      (func-call rule-list)))
 
   (setq-default pyim-english-input-switch-functions
-                '(pyim-probe-dynamic-english
-                  pyim-probe-isearch-mode
-                  pyim-probe-program-mode
-                  pyim-probe-org-structure-template))
+                '(pyim-switch-rules))
 
   (defun pyim-probe-punctuation-after-english-letter (char)
-       (let ((str-before-1 (pyim-char-before-to-string 0))
-             (puncts (mapcar 'car pyim-punctuation-dict)))
-         (and (string-match "[A-Za-z ]" str-before-1)
-              (member (char-to-string char) puncts))))
+    (let ((str-before-1 (pyim-char-before-to-string 0))
+          (puncts (mapcar 'car pyim-punctuation-dict)))
+      (and (string-match "[A-Za-z ]" str-before-1)
+           (member (char-to-string char) puncts))))
 
   
   (setq-default pyim-punctuation-half-width-functions
