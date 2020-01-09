@@ -30,22 +30,21 @@
            :file
            ,(expand-file-name (concat doom-private-dir "etc/pyim/pyim-bigdict.pyim.gz")))))
 
-  (defun func-call (fn-list)
+  (defun or-funcs (fn-list)
     (if (not fn-list)
         nil
-      (let ((is-hit nil))
-        (setq is-hit (funcall (car fn-list)))
-        (if is-hit
-            t
-          (func-call (cdr fn-list))))))
+      (if (or (funcall (car fn-list)))
+          t
+        (or-funcs (cdr fn-list)))))
 
   (defun pyim-switch-rules ()
     (let ((rule-list '(pyim-probe-isearch-mode pyim-probe-program-mode)))
-      (if (not (derived-mode-p 'telega-chat-mode))
-          (progn
+      (if (derived-mode-p 'telega-chat-mode)
+          (push 'pyim-probe-auto-english rule-list)
+        (progn
             (push 'pyim-probe-dynamic-english rule-list)
             (push 'pyim-probe-org-structure-template rule-list)))
-      (func-call rule-list)))
+      (or-funcs rule-list)))
 
   (setq-default pyim-english-input-switch-functions
                 '(pyim-switch-rules))
