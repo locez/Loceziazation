@@ -78,6 +78,14 @@
   (setq telega-chat-fill-column 47
         telega-chat-button-width 47)
 
+  ;; Sarasa Mono SC can make font align correctly,
+  ;; even with mixed Chinese and English
+  (when (member "Sarasa Mono SC" (font-family-list))
+    (make-face 'telega-align-by-sarasa)
+    (set-face-font 'telega-align-by-sarasa (font-spec :family "Sarasa Mono SC"))
+    (add-hook! '(telega-chat-mode-hook telega-root-mode-hook)
+      (buffer-face-set 'telega-align-by-sarasa)))
+
   (add-hook! telega-chat-mode
     (visual-line-mode t)
     ((lambda () (run-at-time nil nil #'activate-input-method "pyim"))))
