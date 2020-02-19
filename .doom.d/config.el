@@ -44,7 +44,7 @@
 
   (defun pyim-switch-rules ()
     (let ((rule-list '(pyim-probe-isearch-mode pyim-probe-program-mode)))
-      (if (derived-mode-p 'telega-chat-mode)
+      (if (or (derived-mode-p 'telega-chat-mode) (derived-mode-p 'org-mode))
           (push 'pyim-probe-auto-english rule-list)
         (progn
             (push 'pyim-probe-dynamic-english rule-list)
