@@ -11,3 +11,8 @@
     :repo "merrickluo/liberime"
     :branch "master"
     :files ("CMakeLists.txt" "Makefile" "src" "liberime-config.el")))
+(package! eaf :recipe
+  (:host github
+    :repo "manateelazycat/emacs-application-framework"
+    :branch "master"
+    :files ("app" "core" "docker" "screenshot" "eaf.py" "eaf.el")))

@@ -4,6 +4,11 @@
 ;;(set-popup-rule! "Treemacs\-*" :ignore t :quit nil :ttl nil :autosave t :side 'left)
 (load! "lib/tools")
 
+(use-package! eaf)
+
+(setq org-pandoc-options-for-gfm '((wrap . "none")))
+(add-hook! org-mode
+    (activate-input-method "pyim"))
 
 (use-package! liberime-config
   :init
