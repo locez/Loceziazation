@@ -82,7 +82,9 @@
     :side 'right :size 60 :quit nil :modeline t :select t)
 
   (setq telega-chat-fill-column 47
-        telega-chat-button-width 47)
+        telega-chat-button-width 47
+        telega-emoji-use-images nil
+        telega-chat-show-deleted-messages-for '(not saved-messages))
 
   ;; Sarasa Mono SC can make font align correctly,
   ;; even with mixed Chinese and English
