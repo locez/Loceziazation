@@ -16,3 +16,4 @@
     :repo "manateelazycat/emacs-application-framework"
     :branch "master"
     :files ("app" "core" "docker" "screenshot" "eaf.py" "eaf.el")))
+(package! ebuild-mode)

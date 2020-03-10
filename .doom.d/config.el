@@ -5,6 +5,7 @@
 (load! "lib/tools")
 
 (use-package! eaf)
+(use-package! ebuild-mode)
 
 (setq org-pandoc-options-for-gfm '((wrap . "none")))
 (add-hook! org-mode
