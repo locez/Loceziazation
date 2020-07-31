@@ -2,3 +2,4 @@ patch:
      "menu/page_size": 100
      "speller/auto_select": false
      "speller/auto_select_unique_candidate": false
+     "schema_list/schema": luna_pinyin_simp
