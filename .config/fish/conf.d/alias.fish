@@ -1,1 +1,1 @@
-alias vim="emacs -nw"
+alias vim="emacsclient -c -nw"
