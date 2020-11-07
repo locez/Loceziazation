@@ -205,4 +205,14 @@
 
        :config
        ;;literate
-       (default +bindings +smartparens))
+       (default +bindings +smartparens)
+
+       :locez
+       chinese
+       code
+       ebuild
+       keybindings
+       org
+       telega
+       tools
+       ui)
