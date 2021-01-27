@@ -5,4 +5,4 @@
   (:host github
     :repo "manateelazycat/emacs-application-framework"
     :branch "master"
-    :files ("app" "core" "docker" "screenshot" "eaf.py" "eaf.el")))
+    :files ("app" "core" "docker" "screenshot" "eaf.py" "*.el")))
