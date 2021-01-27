@@ -1,0 +1,41 @@
+window:
+  startup_mode: Fullscreen
+  history: 10000
+font:
+  normal:
+    family: source code pro
+    style: Regular
+  bold:
+    family: source code pro
+    style: Bold
+  italic:
+    family: source code pro
+    style: Italic
+  bold_italic:
+    family: source code pro
+    style: Bold Italic
+  size: 16.0
+colors:
+  primary:
+    background: '#232627'
+    foreground: '#fcfcfc'
+  normal:
+    black:   '#7f8c8d'
+    red:     '#c0392b'
+    green:   '#1cdc9a'
+    yellow:  '#fdbc4b'
+    blue:    '#3daee9'
+    magenta: '#8e44ad'
+    cyan:    '#16a085'
+    white:   '#ffffff'
+  bright:
+    black:   '#141b27'
+    red:     '#ed1515'
+    green:   '#11d116'
+    yellow:  '#f67400'
+    blue:    '#1d99f3'
+    magenta: '#9b59b6'
+    cyan:    '#1abc9c'
+    white:   '#fcfcfc'
+background_opacity: 0.8
+live_config_reload: true
