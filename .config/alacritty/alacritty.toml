@@ -1,0 +1,49 @@
+[colors.bright]
+black = "#141b27"
+blue = "#1d99f3"
+cyan = "#1abc9c"
+green = "#11d116"
+magenta = "#9b59b6"
+red = "#ed1515"
+white = "#fcfcfc"
+yellow = "#f67400"
+
+[colors.normal]
+black = "#7f8c8d"
+blue = "#3daee9"
+cyan = "#16a085"
+green = "#1cdc9a"
+magenta = "#8e44ad"
+red = "#c0392b"
+white = "#ffffff"
+yellow = "#fdbc4b"
+
+[colors.primary]
+background = "#232627"
+foreground = "#fcfcfc"
+
+[font]
+size = 16.0
+
+[font.bold]
+family = "source code pro"
+style = "Bold"
+
+[font.bold_italic]
+family = "source code pro"
+style = "Bold Italic"
+
+[font.italic]
+family = "source code pro"
+style = "Italic"
+
+[font.normal]
+family = "source code pro"
+style = "Regular"
+
+[window]
+opacity = 1.0
+startup_mode = "Fullscreen"
+
+[general]
+live_config_reload = true
