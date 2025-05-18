@@ -1,0 +1,10 @@
+[General]
+count=1
+rules=eb1e1ad3-efeb-4bad-a537-5d097d35c7b6
+
+[eb1e1ad3-efeb-4bad-a537-5d097d35c7b6]
+Description=Application settings for Alacritty
+shortcut=Meta+Return
+shortcutrule=2
+wmclass=Alacritty
+wmclassmatch=1
