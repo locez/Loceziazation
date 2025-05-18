@@ -42,7 +42,7 @@ family = "source code pro"
 style = "Regular"
 
 [window]
-opacity = 1.0
+opacity = 0.8
 startup_mode = "Fullscreen"
 
 [general]
