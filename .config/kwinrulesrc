@@ -1,6 +1,6 @@
 [General]
-count=1
-rules=eb1e1ad3-efeb-4bad-a537-5d097d35c7b6
+count=2
+rules=6553b75d-196e-4afe-9d6b-33096d527f7a,eb1e1ad3-efeb-4bad-a537-5d097d35c7b6
 
 [eb1e1ad3-efeb-4bad-a537-5d097d35c7b6]
 Description=Application settings for Alacritty

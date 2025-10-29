@@ -12,12 +12,6 @@ _k_friendly_name=Keyboard Layout Switcher
 Toggle Screen Reader On and Off=Meta+Alt+S,Meta+Alt+S,Toggle Screen Reader On and Off
 _k_friendly_name=Accessibility
 
-[kcm_touchpad]
-Disable Touchpad=Touchpad Off,Touchpad Off,
-Enable Touchpad=Touchpad On,Touchpad On,
-Toggle Touchpad=Touchpad Toggle\tMeta+Ctrl+Zenkaku Hankaku,Touchpad Toggle\tTouchpad Toggle\tMeta+Ctrl+Touchpad Toggle\tMeta+Ctrl+Zenkaku Hankaku,
-_k_friendly_name=Touchpad
-
 [kmix]
 _k_friendly_name=Audio Volume
 decrease_microphone_volume=Microphone Volume Down,Microphone Volume Down,Decrease Microphone Volume
@@ -109,14 +103,14 @@ Switch to Screen to the Left=none,,Switch to Screen to the Left
 Switch to Screen to the Right=none,,Switch to Screen to the Right
 Toggle Night Color=none,none,Suspend/Resume Night Light
 Toggle Window Raise/Lower=none,,Toggle Window Raise/Lower
-Walk Through Windows=Alt+Tab,Alt+Tab,Walk Through Windows
-Walk Through Windows (Reverse)=Alt+Shift+Tab,Alt+Shift+Tab,Walk Through Windows (Reverse)
-Walk Through Windows Alternative=none,,Walk Through Windows Alternative
-Walk Through Windows Alternative (Reverse)=none,,Walk Through Windows Alternative (Reverse)
-Walk Through Windows of Current Application=Alt+`,Alt+`,Walk Through Windows of Current Application
-Walk Through Windows of Current Application (Reverse)=Alt+~,Alt+~,Walk Through Windows of Current Application (Reverse)
-Walk Through Windows of Current Application Alternative=none,,Walk Through Windows of Current Application Alternative
-Walk Through Windows of Current Application Alternative (Reverse)=none,,Walk Through Windows of Current Application Alternative (Reverse)
+Walk Through Windows=Alt+Tab,Meta+Tab\tAlt+Tab,Walk Through Windows
+Walk Through Windows (Reverse)=Alt+Shift+Tab,Meta+Shift+Tab\tAlt+Shift+Tab,Walk Through Windows (Reverse)
+Walk Through Windows Alternative=none,none,Walk Through Windows Alternative
+Walk Through Windows Alternative (Reverse)=none,none,Walk Through Windows Alternative (Reverse)
+Walk Through Windows of Current Application=Alt+`,Meta+`\tAlt+`,Walk Through Windows of Current Application
+Walk Through Windows of Current Application (Reverse)=Alt+~,Meta+~\tAlt+~,Walk Through Windows of Current Application (Reverse)
+Walk Through Windows of Current Application Alternative=none,none,Walk Through Windows of Current Application Alternative
+Walk Through Windows of Current Application Alternative (Reverse)=none,none,Walk Through Windows of Current Application Alternative (Reverse)
 Window Above Other Windows=none,,Keep Window Above Others
 Window Below Other Windows=none,,Keep Window Below Others
 Window Close=Alt+F4,Alt+F4,Close Window
@@ -211,6 +205,43 @@ playpausemedia=Media Play,Media Play,Play/Pause media playback
 previousmedia=Media Previous,Media Previous,Media playback previous
 stopmedia=Media Stop,Media Stop,Stop media playback
 
+[org.chromium.Chromium]
+5E5D83FC589B8BA3895244469CCAF4E8-openAiWritingModal=none,none,Open AI Write Modal
+5E5D83FC589B8BA3895244469CCAF4E8-shareToDraft=none,none,Share Bilingual Page
+5E5D83FC589B8BA3895244469CCAF4E8-toggleMouseHoverTranslateDirectly=none,none,Temporarily enable or disable direct translation by mouse hover on the page
+5E5D83FC589B8BA3895244469CCAF4E8-toggleOnlyTransation=none,none,Switch to /translation-only mode
+5E5D83FC589B8BA3895244469CCAF4E8-toggleSidePanel=none,none,Open/Close Side Panel
+5E5D83FC589B8BA3895244469CCAF4E8-toggleTranslatePage=none,none,Translate Webpage/Show Original Text
+5E5D83FC589B8BA3895244469CCAF4E8-toggleTranslateTheMainPage=none,none,Translate main page /Display original text
+5E5D83FC589B8BA3895244469CCAF4E8-toggleTranslateTheWholePage=none,none,Translate entire page/Display original text
+5E5D83FC589B8BA3895244469CCAF4E8-toggleTranslateToThePageEndImmediately=none,none,Translate instantly to the bottom of the page/Display original text
+5E5D83FC589B8BA3895244469CCAF4E8-toggleTranslationMask=none,none,Toggle blur effect on translated text (learning mode) for the current page
+5E5D83FC589B8BA3895244469CCAF4E8-toggleVideoSubtitlePreTranslation=none,none,Switch Video Subtitles with Immersive Translation Feature
+5E5D83FC589B8BA3895244469CCAF4E8-translateInputBox=none,none,Translate the content of the current input box
+5E5D83FC589B8BA3895244469CCAF4E8-translateWithBing=none,none,Temporarily translate the current page with Microsoft Translator
+5E5D83FC589B8BA3895244469CCAF4E8-translateWithClaude=none,none,Temporarily use Claude to translate the current page.
+5E5D83FC589B8BA3895244469CCAF4E8-translateWithCustom1=none,none,Temporary use of custom translation services to translate the current page(1)
+5E5D83FC589B8BA3895244469CCAF4E8-translateWithCustom2=none,none,Temporary use of custom translation services to translate the current page(2)
+5E5D83FC589B8BA3895244469CCAF4E8-translateWithCustom3=none,none,Temporary use of custom translation services to translate the current page(3)
+5E5D83FC589B8BA3895244469CCAF4E8-translateWithDeepL=none,none,Temporarily translate the current page with DeepL
+5E5D83FC589B8BA3895244469CCAF4E8-translateWithGemini=none,none,Temporarily translate the current page with Gemini
+5E5D83FC589B8BA3895244469CCAF4E8-translateWithGoogle=none,none,Temporarily translate the current page with Google
+5E5D83FC589B8BA3895244469CCAF4E8-translateWithOpenAI=none,none,Temporarily translate the current page with OpenAI
+5E5D83FC589B8BA3895244469CCAF4E8-translateWithTransmart=none,none,Temporarily translate the current page with Tencent Translator
+C1A82C68928271E6FE29ECC504905A08-autofill_card=none,none,Autofill the last used card for the current website
+C1A82C68928271E6FE29ECC504905A08-autofill_identity=none,none,Autofill the last used identity for the current website
+C1A82C68928271E6FE29ECC504905A08-autofill_login=none,none,Autofill the last used login for the current website
+C1A82C68928271E6FE29ECC504905A08-generate_password=none,none,Generate and copy a new random password to the clipboard
+C1A82C68928271E6FE29ECC504905A08-lock_vault=none,none,Lock the vault
+D3A0C7E78A5BD366CD77361D94421CF8-launch-element-picker=none,none,Enter element picker mode
+D3A0C7E78A5BD366CD77361D94421CF8-launch-element-zapper=none,none,Enter element zapper mode
+D3A0C7E78A5BD366CD77361D94421CF8-launch-logger=none,none,Open the logger
+D3A0C7E78A5BD366CD77361D94421CF8-open-dashboard=none,none,Open the dashboard
+D3A0C7E78A5BD366CD77361D94421CF8-relax-blocking-mode=none,none,Relax blocking mode
+D3A0C7E78A5BD366CD77361D94421CF8-toggle-cosmetic-filtering=none,none,Toggle cosmetic filtering
+D3A0C7E78A5BD366CD77361D94421CF8-toggle-javascript=none,none,Toggle JavaScript
+_k_friendly_name=org.chromium.Chromium
+
 [org_kde_powerdevil]
 Decrease Keyboard Brightness=Keyboard Brightness Down,Keyboard Brightness Down,Decrease Keyboard Brightness
 Decrease Screen Brightness=Monitor Brightness Down,Monitor Brightness Down,Decrease Screen Brightness
@@ -245,6 +276,7 @@ clipboard_action=Meta+Ctrl+X,Meta+Ctrl+X,Automatic Action Popup Menu
 cycle-panels=Meta+Alt+P,Meta+Alt+P,Move keyboard focus between panels
 cycleNextAction=none,,Next History Item
 cyclePrevAction=none,,Previous History Item
+edit_clipboard=none,,Edit Contents…
 manage activities=Meta+Q,Meta+Q,Show Activity Switcher
 next activity=Meta+A,none,Walk through activities
 previous activity=Meta+Shift+A,none,Walk through activities (Reverse)
@@ -260,13 +292,13 @@ toggle do not disturb=none,,Toggle do not disturb
 [services][net.local.alacritty_opacity_switch.sh.desktop]
 _launch=Ctrl+Print
 
-[services][net.local.flameshot.desktop]
-_launch=Print
-
 [services][org.kde.spectacle.desktop]
 FullScreenScreenShot=none
 RecordWindow=none
-_launch=Meta+Shift+S
+_launch=Meta+Shift+S\tPrint
+
+[services][org.kde.touchpadshortcuts.desktop]
+ToggleTouchpad=Touchpad Toggle\tMeta+Ctrl+Zenkaku Hankaku
 
 [wacomtablet]
 Map to fullscreen=Meta+Ctrl+F,Meta+Ctrl+F,Map to fullscreen
