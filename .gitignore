@@ -1,0 +1,57 @@
+# ==========================================
+# Yadm 家目录忽略规则 (黑名单模式)
+# ==========================================
+
+# 1. 忽略所有常见的个人大文件夹
+/Desktop/
+/Documents/
+/Downloads/
+/Music/
+/Pictures/
+/Public/
+/Templates/
+/Videos/
+
+# 2. 忽略底层环境和编译缓存 (写代码必备)
+/.cargo/
+/.rustup/
+/.npm/
+/.nvm/
+/.conda/
+/__pycache__/
+*.pyc
+/.venv/
+/venv/
+/.go/
+
+# 3. 忽略各种软件的庞大数据和缓存目录
+/.cache/
+/.local/share/
+/.local/state/
+/.mozilla/
+/.vscode/
+/.vscode-server/
+/.var/
+/.docker/
+
+# 4. 忽略命令行历史和各种零碎的 state 文件
+/.bash_history
+/.zsh_history
+/.python_history
+/.lesshst
+/.wget-hsts
+/.sudo_as_admin_successful
+/.xsession-errors
+/.xsession-errors.old
+/.Xauthority
+
+# 5. 忽略 SSH 私钥和 GPG 凭证 (绝对不能上传这个！)
+/.ssh/id_*
+/.ssh/known_hosts
+/.gnupg/
+/.pki/
+
+# 6. 如果你在家目录下建了代码项目文件夹，也屏蔽掉
+/workspace/
+/projects/
+/code/
