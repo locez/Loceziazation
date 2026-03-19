@@ -1,6 +1,17 @@
+[5964fb8b-0b78-49e3-a468-51050cf6264e]
+Description=Window settings for python3
+aboverule=2
+layer=overlay
+layerrule=2
+title=My Qt App
+types=1
+wmclass=python3.13 python3
+wmclasscomplete=true
+wmclassmatch=1
+
 [General]
 count=2
-rules=6553b75d-196e-4afe-9d6b-33096d527f7a,eb1e1ad3-efeb-4bad-a537-5d097d35c7b6
+rules=5964fb8b-0b78-49e3-a468-51050cf6264e,eb1e1ad3-efeb-4bad-a537-5d097d35c7b6
 
 [eb1e1ad3-efeb-4bad-a537-5d097d35c7b6]
 Description=Application settings for Alacritty

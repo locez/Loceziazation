@@ -1,6 +1,9 @@
 [user]
 	email = locez@locez.com
 	name = Locez
+	signingkey = 8B647CAD4F096FC8
+[commit]
+	gpgsign = true
 [core]
 	pager = delta
 [interactive]
@@ -11,3 +14,5 @@
 	side-by-side = false
 [merge]
 	conflictStyle = zdiff3
+[init]
+	defaultBranch = main

@@ -47,3 +47,30 @@ startup_mode = "Fullscreen"
 
 [general]
 live_config_reload = true
+
+# ==========================
+# Alacritty Regex Hints 键盘提取配置
+# ==========================
+[hints]
+# 当屏幕上出现多个匹配项时，用这些字母来作为快捷键提示 (全都在左手和右手的黄金键位上)
+alphabet = "jfkdls;ahgurieowpq"
+
+# 1. 狙击 URL (一键在浏览器打开)
+[[hints.enabled]]
+regex = "(ipfs:|ipns:|magnet:|mailto:|gemini:|gopher:|https:|http:|news:|file:|git:|ssh:|ftp:)[^\u0000-\u001F\u007F-\u009F<>\"\\s{-}\\^⟨⟩`]+"
+command = "xdg-open" # Linux/Wayland 下调用默认应用打开
+post_processing = true
+mouse.enabled = true
+binding = { key = "U", mods = "Control|Shift" }
+
+# 2. 狙击 Git Hash / UUID / 内存地址 (一键复制到剪贴板)
+[[hints.enabled]]
+regex = "[0-9a-f]{7,40}"
+action = "Copy"
+binding = { key = "H", mods = "Control|Shift" }
+
+# 3. 狙击文件路径 (比如 src/core/main.rs，一键复制)
+[[hints.enabled]]
+regex = "(?i)(?:/[\\w\\.\\-]+)+/?|(?:[\\w\\.\\-]+/)+[\\w\\.\\-]+"
+action = "Copy"
+binding = { key = "F", mods = "Control|Shift" }
