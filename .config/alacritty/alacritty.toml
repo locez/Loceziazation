@@ -23,22 +23,26 @@ background = "#232627"
 foreground = "#fcfcfc"
 
 [font]
-size = 16.0
+size = 14.0
+
+[font.offset]
+x = 0
+y = 2
 
 [font.bold]
-family = "source code pro"
+family = "Maple Mono NF"
 style = "Bold"
 
 [font.bold_italic]
-family = "source code pro"
+family = "Maple Mono NF"
 style = "Bold Italic"
 
 [font.italic]
-family = "source code pro"
+family = "Maple Mono NF"
 style = "Italic"
 
 [font.normal]
-family = "source code pro"
+family = "Maple Mono NF"
 style = "Regular"
 
 [window]
@@ -55,13 +59,29 @@ live_config_reload = true
 # 当屏幕上出现多个匹配项时，用这些字母来作为快捷键提示 (全都在左手和右手的黄金键位上)
 alphabet = "jfkdls;ahgurieowpq"
 
+
+# ==========================================
+# 1. 解决快捷键冲突
+# ==========================================
+# 显式解除 Ctrl+Shift+F 的默认搜索功能，把它纯粹留给文件路径狙击
+[[keyboard.bindings]]
+key = "F"
+mods = "Control|Shift"
+action = "None"
+
+[[keyboard.bindings]]
+key = "S"
+mods = "Control|Shift"
+action = "SearchForward"
+
+
 # 1. 狙击 URL (一键在浏览器打开)
 [[hints.enabled]]
 regex = "(ipfs:|ipns:|magnet:|mailto:|gemini:|gopher:|https:|http:|news:|file:|git:|ssh:|ftp:)[^\u0000-\u001F\u007F-\u009F<>\"\\s{-}\\^⟨⟩`]+"
 command = "xdg-open" # Linux/Wayland 下调用默认应用打开
 post_processing = true
 mouse.enabled = true
-binding = { key = "U", mods = "Control|Shift" }
+binding = { key = "O", mods = "Control|Shift" }
 
 # 2. 狙击 Git Hash / UUID / 内存地址 (一键复制到剪贴板)
 [[hints.enabled]]
@@ -69,8 +89,10 @@ regex = "[0-9a-f]{7,40}"
 action = "Copy"
 binding = { key = "H", mods = "Control|Shift" }
 
-# 3. 狙击文件路径 (比如 src/core/main.rs，一键复制)
 [[hints.enabled]]
-regex = "(?i)(?:/[\\w\\.\\-]+)+/?|(?:[\\w\\.\\-]+/)+[\\w\\.\\-]+"
+# 前面保留你原有的斜杠路径和空格防御逻辑，最后加上 |\.?[\w...]+(?:\.[\w...]+)+ 来兜底独立文件
+regex = "(?i)(?:~/|/)(?:(?:\\.{1,2}|[\\w+#@()\\[\\]\\-.]*[\\w()\\[\\]\\-])(?: +(?:\\.{1,2}|[\\w+#@()\\[\\]\\-.]*[\\w()\\[\\]\\-]))*(?:/(?:\\.{1,2}|[\\w+#@()\\[\\]\\-.]*[\\w()\\[\\]\\-])(?: +(?:\\.{1,2}|[\\w+#@()\\[\\]\\-.]*[\\w()\\[\\]\\-]))*)*)?/?|(?:\\.{1,2}|[\\w+#@()\\[\\]\\-.]*[\\w()\\[\\]\\-])(?: +(?:\\.{1,2}|[\\w+#@()\\[\\]\\-.]*[\\w()\\[\\]\\-]))*/(?:(?:\\.{1,2}|[\\w+#@()\\[\\]\\-.]*[\\w()\\[\\]\\-])(?: +(?:\\.{1,2}|[\\w+#@()\\[\\]\\-.]*[\\w()\\[\\]\\-]))*(?:/(?:\\.{1,2}|[\\w+#@()\\[\\]\\-.]*[\\w()\\[\\]\\-])(?: +(?:\\.{1,2}|[\\w+#@()\\[\\]\\-.]*[\\w()\\[\\]\\-]))*)*)?/?|\\.?[\\w+#@()\\[\\]\\-]+(?:\\.[\\w+#@()\\[\\]\\-]+)+"
 action = "Copy"
 binding = { key = "F", mods = "Control|Shift" }
+post_processing = true
+mouse.enabled = true
