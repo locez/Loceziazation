@@ -121,11 +121,16 @@ append_common_mounts() {
   local argv_name="$1"
   local -n argv="$argv_name"
 
+  append_bind_file "$argv_name" "$HOME/.gitconfig"
+  append_bind_file "$argv_name" "$HOME/.git-credentials"
+  append_bind_file "$argv_name" "$HOME/.git-allowed-signers"
+
   append_bind_dir "$argv_name" "$HOME/.local/bin"
   append_bind_dir "$argv_name" "$HOME/.local/share/mise"
   append_bind_dir "$argv_name" "$HOME/.config"
   append_bind_dir "$argv_name" "$HOME/.cache"
   append_bind_dir "$argv_name" "$HOME/.local/share"
+  append_bind_dir "$argv_name" "$HOME/.gnupg"
 
   append_bind_dir "$argv_name" "$HOME/.codex"
   append_bind_dir "$argv_name" "$HOME/.claude"
@@ -156,6 +161,62 @@ append_common_mounts() {
       [ -n "$extra" ] || continue
       append_bind_dir "$argv_name" "$extra"
     done <<< "${AI_CODE_EXTRA_BIND//$'\n'/$'\n'}"
+  fi
+}
+
+append_runtime_integration_mounts() {
+  local argv_name="$1"
+  local -n argv="$argv_name"
+  local runtime_dir="${XDG_RUNTIME_DIR:-}"
+  local wayland_path dbus_path ssh_path
+
+  [ -n "$runtime_dir" ] || return 0
+
+  append_bind_dir "$argv_name" "$runtime_dir/gnupg"
+
+  if [ -n "${WAYLAND_DISPLAY:-}" ]; then
+    wayland_path="$runtime_dir/$WAYLAND_DISPLAY"
+    append_bind_file "$argv_name" "$wayland_path" "$wayland_path"
+  fi
+
+  if [ -n "${DBUS_SESSION_BUS_ADDRESS:-}" ]; then
+    case "$DBUS_SESSION_BUS_ADDRESS" in
+      unix:path=*)
+        dbus_path="${DBUS_SESSION_BUS_ADDRESS#unix:path=}"
+        append_bind_file "$argv_name" "$dbus_path" "$dbus_path"
+        ;;
+    esac
+  fi
+
+  if [ -n "${SSH_AUTH_SOCK:-}" ]; then
+    ssh_path="$SSH_AUTH_SOCK"
+    append_bind_file "$argv_name" "$ssh_path" "$ssh_path"
+  fi
+}
+
+append_host_env() {
+  local argv_name="$1"
+  local -n argv="$argv_name"
+  local env_name value
+
+  for env_name in \
+    DISPLAY \
+    WAYLAND_DISPLAY \
+    XAUTHORITY \
+    XDG_CURRENT_DESKTOP \
+    XDG_SESSION_TYPE \
+    DESKTOP_SESSION \
+    DBUS_SESSION_BUS_ADDRESS \
+    SSH_AUTH_SOCK \
+    GPG_TTY
+  do
+    value="${!env_name-}"
+    [ -n "$value" ] || continue
+    argv+=(--setenv "$env_name" "$value")
+  done
+
+  if [ -n "${XDG_RUNTIME_DIR:-}" ]; then
+    argv+=(--setenv XDG_RUNTIME_DIR "$XDG_RUNTIME_DIR")
   fi
 }
 
@@ -213,6 +274,7 @@ run_sandbox_agent() {
   if [ -n "${HERMES_HOME:-}" ]; then
     bwrap_args+=(--setenv HERMES_HOME "$HERMES_HOME")
   fi
+  append_host_env bwrap_args
 
   append_bind_file bwrap_args /etc/resolv.conf
   append_bind_file bwrap_args /etc/hosts
@@ -226,6 +288,7 @@ run_sandbox_agent() {
   append_bind_dir bwrap_args /etc/ca-certificates /etc/ca-certificates ro
   append_bind_dir bwrap_args /etc/pki /etc/pki ro
   append_common_mounts bwrap_args
+  append_runtime_integration_mounts bwrap_args
   append_bind_dir bwrap_args "$root"
 
   if [ -n "${AI_CODE_KEEP_ENV:-}" ]; then
