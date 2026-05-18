@@ -1,0 +1,109 @@
+#!/usr/bin/env bash
+set -euo pipefail
+
+DEFAULT_AI_CODE_AGENT="codex"
+DEFAULT_AI_CODE_VIEWER="nvview ."
+
+die() {
+  printf 'aiws: %s\n' "$*" >&2
+  exit 1
+}
+
+usage() {
+  cat <<'USAGE'
+usage:
+  aiws [-C DIR] [-a AGENT] [AGENT_ARGS...]
+
+options:
+  -C, --cd DIR       project directory, default current directory
+  -a, --agent NAME   agent command/profile, default codex
+  -h, --help         show help
+USAGE
+}
+
+quote_for_shell() {
+  local quoted=()
+  local arg
+
+  for arg in "$@"; do
+    printf -v arg '%q' "$arg"
+    quoted+=("$arg")
+  done
+
+  printf '%s' "${quoted[*]}"
+}
+
+main() {
+  local root="$PWD"
+  local agent="${AI_CODE_AGENT:-$DEFAULT_AI_CODE_AGENT}"
+
+  while [ "$#" -gt 0 ]; do
+    case "$1" in
+      -C|--cd)
+        [ "$#" -ge 2 ] || die "$1 requires a directory"
+        root="$2"
+        shift 2
+        ;;
+      -a|--agent)
+        [ "$#" -ge 2 ] || die "$1 requires an agent name"
+        agent="$2"
+        shift 2
+        ;;
+      -h|--help)
+        usage
+        exit 0
+        ;;
+      --)
+        shift
+        break
+        ;;
+      -*)
+        break
+        ;;
+      *)
+        if [ -d "$1" ]; then
+          root="$1"
+          shift
+        fi
+        break
+        ;;
+    esac
+  done
+
+  root="$(cd "$root" && pwd -P)"
+  local project
+  project="$(printf '%s' "$(basename "$root")" | tr -c 'A-Za-z0-9_.-' '-')"
+  local session="ai-${project}"
+  local viewer_command="${AI_CODE_VIEWER:-$DEFAULT_AI_CODE_VIEWER}"
+
+  local -a aicode_cmd=(aicode -C "$root" -a "$agent")
+  aicode_cmd+=("$@")
+
+  local launcher
+  launcher="$(quote_for_shell "${aicode_cmd[@]}")"
+
+  if [ -n "${AIWS_DEBUG_COMMAND:-}" ]; then
+    printf 'session=%s root=%s ai=%s viewer=%s\n' "$session" "$root" "$launcher" "$viewer_command"
+    return 0
+  fi
+
+  if ! tmux has-session -t "$session" 2>/dev/null; then
+    tmux new-session -d -s "$session" -c "$root" -n ai
+    tmux send-keys -t "$session:ai" "$launcher" C-m
+
+    tmux new-window -t "$session" -c "$root" -n code
+    tmux send-keys -t "$session:code" "$viewer_command" C-m
+
+    tmux new-window -t "$session" -c "$root" -n run
+
+    tmux select-window -t "$session:ai"
+  fi
+
+  if [ -n "${TMUX:-}" ]; then
+    tmux switch-client -t "$session"
+  else
+    exec tmux attach -t "$session"
+  fi
+}
+
+main "$@"

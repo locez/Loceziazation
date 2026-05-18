@@ -2,29 +2,398 @@
 set -euo pipefail
 
 DEFAULT_AI_CODE_AGENT="codex"
-DEFAULT_AI_CODE_VIEWER="nvview ."
 
-root="${1:-$PWD}"
-root="$(cd "$root" && pwd)"
-project="$(basename "$root" | tr -c 'A-Za-z0-9_.-' '-')"
-session="ai-${project}"
-agent_command="${AI_CODE_AGENT:-$DEFAULT_AI_CODE_AGENT}"
-viewer_command="${AI_CODE_VIEWER:-$DEFAULT_AI_CODE_VIEWER}"
+die() {
+  printf 'aicode: %s\n' "$*" >&2
+  exit 1
+}
 
-if ! tmux has-session -t "$session" 2>/dev/null; then
-  tmux new-session -d -s "$session" -c "$root" -n ai
-  tmux send-keys -t "$session:ai" "$agent_command" C-m
+usage() {
+  cat <<'USAGE'
+usage:
+  aicode [-C DIR] [-a AGENT] [AGENT_ARGS...]
+  aicode [-C DIR] [-a AGENT] resume [SESSION_ID] [PROMPT...]
+  aicode --sandbox-agent DIR -- AGENT [ARGS...]
 
-  tmux new-window -t "$session" -c "$root" -n code
-  tmux send-keys -t "$session:code" "$viewer_command" C-m
+options:
+  -C, --cd DIR       project directory, default current directory
+  -a, --agent NAME   agent command/profile, default codex
+  -h, --help         show help
 
-  tmux new-window -t "$session" -c "$root" -n run
+agents:
+  codex, claude, opencode, hermes
+USAGE
+}
 
-  tmux select-window -t "$session:ai"
-fi
+quote_for_shell() {
+  local quoted=()
+  local arg
 
-if [ -n "${TMUX:-}" ]; then
-  tmux switch-client -t "$session"
-else
-  exec tmux attach -t "$session"
-fi
+  for arg in "$@"; do
+    printf -v arg '%q' "$arg"
+    quoted+=("$arg")
+  done
+
+  printf '%s' "${quoted[*]}"
+}
+
+print_nul_args() {
+  [ "$#" -gt 0 ] || return 0
+  printf '%s\0' "$@"
+}
+
+ensure_mount_parents() {
+  local -n argv="$1"
+  local dest="$2"
+  local parent
+
+  parent="$(dirname "$dest")"
+  while [ "$parent" != "/" ] && [ -n "$parent" ]; do
+    argv+=(--dir "$parent")
+    parent="$(dirname "$parent")"
+  done
+}
+
+append_bind_dir() {
+  local argv_name="$1"
+  local -n argv="$argv_name"
+  local src="$2"
+  local dest="${3:-$2}"
+  local mode="${4:-rw}"
+
+  [ -e "$src" ] || return 0
+  ensure_mount_parents "$argv_name" "$dest"
+  if [ -d "$src" ]; then
+    argv+=(--dir "$dest")
+  fi
+  if [ "$mode" = "ro" ]; then
+    argv+=(--ro-bind "$src" "$dest")
+  else
+    argv+=(--bind "$src" "$dest")
+  fi
+}
+
+append_bind_file() {
+  local argv_name="$1"
+  local -n argv="$argv_name"
+  local src="$2"
+  local dest="${3:-$2}"
+
+  [ -e "$src" ] || return 0
+  ensure_mount_parents "$argv_name" "$dest"
+  argv+=(--ro-bind "$src" "$dest")
+}
+
+read_mise_path() {
+  local root="$1"
+  local mise_bin="${MISE_BIN:-$HOME/.local/bin/mise}"
+  local line path
+
+  [ -x "$mise_bin" ] || return 1
+  while IFS= read -r line; do
+    case "$line" in
+      export\ PATH=*)
+        path="${line#export PATH=}"
+        path="${path%\'}"
+        path="${path#\'}"
+        printf '%s\n' "$path"
+        return 0
+        ;;
+    esac
+  done < <("$mise_bin" env -s bash -C "$root" 2>/dev/null || true)
+
+  return 1
+}
+
+build_path() {
+  local root="$1"
+  local base_path="$HOME/.local/bin:/usr/local/sbin:/usr/local/bin:/usr/bin:/opt/bin:/usr/lib/llvm/21/bin:/opt/cuda/bin"
+  local mise_path
+
+  if mise_path="$(read_mise_path "$root")" && [ -n "$mise_path" ]; then
+    printf '%s\n' "$mise_path"
+  else
+    printf '%s\n' "$base_path"
+  fi
+}
+
+append_common_mounts() {
+  local argv_name="$1"
+  local -n argv="$argv_name"
+
+  append_bind_dir "$argv_name" "$HOME/.local/bin"
+  append_bind_dir "$argv_name" "$HOME/.local/share/mise"
+  append_bind_dir "$argv_name" "$HOME/.config"
+  append_bind_dir "$argv_name" "$HOME/.cache"
+  append_bind_dir "$argv_name" "$HOME/.local/share"
+
+  append_bind_dir "$argv_name" "$HOME/.codex"
+  append_bind_dir "$argv_name" "$HOME/.claude"
+  append_bind_dir "$argv_name" "$HOME/.gemini"
+  append_bind_dir "$argv_name" "$HOME/.config/gemini"
+  append_bind_dir "$argv_name" "$HOME/.config/opencode"
+  append_bind_dir "$argv_name" "$HOME/.config/github-copilot"
+  append_bind_dir "$argv_name" "$HOME/.cache/codex"
+  append_bind_dir "$argv_name" "$HOME/.cache/claude"
+  append_bind_dir "$argv_name" "$HOME/.cache/gemini"
+  append_bind_dir "$argv_name" "$HOME/.cache/opencode"
+  append_bind_dir "$argv_name" "$HOME/.local/share/codex"
+  append_bind_dir "$argv_name" "$HOME/.local/share/claude"
+  append_bind_dir "$argv_name" "$HOME/.local/share/gemini"
+  append_bind_dir "$argv_name" "$HOME/.local/share/opencode"
+  append_bind_dir "$argv_name" "$HOME/.hermes"
+
+  if [ -n "${HERMES_HOME:-}" ]; then
+    append_bind_dir "$argv_name" "$HERMES_HOME"
+  fi
+
+  append_bind_file "$argv_name" "$HOME/.aider.conf.yml"
+  append_bind_file "$argv_name" "$HOME/.aider.model.settings.yml"
+
+  if [ -n "${AI_CODE_EXTRA_BIND:-}" ]; then
+    local extra
+    while IFS= read -r extra; do
+      [ -n "$extra" ] || continue
+      append_bind_dir "$argv_name" "$extra"
+    done <<< "${AI_CODE_EXTRA_BIND//$'\n'/$'\n'}"
+  fi
+}
+
+run_sandbox_agent() {
+  [ "$#" -ge 2 ] || die "usage: aicode --sandbox-agent DIR -- AGENT [ARGS...]"
+
+  local root="$1"
+  shift
+  [ "${1:-}" = "--" ] || die "missing -- before agent command"
+  shift
+  [ "$#" -gt 0 ] || die "missing agent command"
+
+  root="$(cd "$root" && pwd -P)"
+  local shell_command
+  shell_command="$(quote_for_shell "$@")"
+
+  local sandbox_home="${HOME}"
+  local sandbox_path
+  sandbox_path="$(build_path "$root")"
+
+  local -a bwrap_args=(
+    --unshare-all
+    --share-net
+    --clearenv
+    --setenv HOME "$sandbox_home"
+    --setenv USER "${USER:-}"
+    --setenv LOGNAME "${LOGNAME:-${USER:-}}"
+    --setenv SHELL /usr/bin/bash
+    --setenv TERM "${TERM:-xterm-256color}"
+    --setenv LANG "${LANG:-C.UTF-8}"
+    --setenv LC_ALL "${LC_ALL:-}"
+    --setenv PATH "$sandbox_path"
+    --setenv XDG_CONFIG_HOME "$sandbox_home/.config"
+    --setenv XDG_CACHE_HOME "$sandbox_home/.cache"
+    --setenv XDG_DATA_HOME "$sandbox_home/.local/share"
+    --die-with-parent
+    --new-session
+    --dev /dev
+    --proc /proc
+    --tmpfs /tmp
+    --dir /run
+    --ro-bind /usr /usr
+    --ro-bind-try /bin /bin
+    --ro-bind-try /lib /lib
+    --ro-bind-try /lib64 /lib64
+    --ro-bind-try /opt /opt
+    --dir /etc
+    --tmpfs "$sandbox_home"
+    --dir "$sandbox_home/.cache"
+    --dir "$sandbox_home/.local"
+    --dir "$sandbox_home/.config"
+    --dir "$sandbox_home/.npm"
+  )
+
+  if [ -n "${HERMES_HOME:-}" ]; then
+    bwrap_args+=(--setenv HERMES_HOME "$HERMES_HOME")
+  fi
+
+  append_bind_file bwrap_args /etc/resolv.conf
+  append_bind_file bwrap_args /etc/hosts
+  append_bind_file bwrap_args /etc/passwd
+  append_bind_file bwrap_args /etc/group
+  append_bind_file bwrap_args /etc/nsswitch.conf
+  append_bind_file bwrap_args /etc/ld.so.cache
+  append_bind_file bwrap_args /etc/ld.so.conf
+  append_bind_dir bwrap_args /etc/ld.so.conf.d /etc/ld.so.conf.d ro
+  append_bind_dir bwrap_args /etc/ssl /etc/ssl ro
+  append_bind_dir bwrap_args /etc/ca-certificates /etc/ca-certificates ro
+  append_bind_dir bwrap_args /etc/pki /etc/pki ro
+  append_common_mounts bwrap_args
+  append_bind_dir bwrap_args "$root"
+
+  if [ -n "${AI_CODE_KEEP_ENV:-}" ]; then
+    local keep_env value
+    for keep_env in ${AI_CODE_KEEP_ENV//,/ }; do
+      [ -n "$keep_env" ] || continue
+      value="${!keep_env-}"
+      bwrap_args+=(--setenv "$keep_env" "$value")
+    done
+  fi
+
+  bwrap_args+=(--chdir "$root")
+
+  exec bwrap "${bwrap_args[@]}" -- /usr/bin/env bash -lc "$shell_command"
+}
+
+map_agent_command() {
+  local mode="$1"
+  local agent="$2"
+  shift 2
+
+  if [ "$mode" != "resume" ]; then
+    printf '%s\0' "$agent"
+    print_nul_args "$@"
+    return 0
+  fi
+
+  local session_id="${1:-}"
+  if [ "$#" -gt 0 ]; then
+    shift
+  fi
+
+  case "$agent" in
+    codex)
+      printf '%s\0' codex resume
+      if [ -n "$session_id" ]; then
+        printf '%s\0' "$session_id"
+      else
+        printf '%s\0' --last
+      fi
+      ;;
+    claude)
+      printf '%s\0' claude
+      if [ -n "$session_id" ]; then
+        printf '%s\0' --resume "$session_id"
+      else
+        printf '%s\0' --continue
+      fi
+      ;;
+    opencode)
+      printf '%s\0' opencode
+      if [ -n "$session_id" ]; then
+        printf '%s\0' --session "$session_id"
+      else
+        printf '%s\0' --continue
+      fi
+      ;;
+    hermes)
+      printf '%s\0' hermes
+      if [ -n "$session_id" ]; then
+        printf '%s\0' --resume "$session_id"
+      else
+        printf '%s\0' --continue
+      fi
+      ;;
+    *)
+      if [ -n "$session_id" ]; then
+        printf '%s\0' "$agent" resume "$session_id"
+      else
+        printf '%s\0' "$agent" resume
+      fi
+      ;;
+  esac
+
+  print_nul_args "$@"
+}
+
+parse_main() {
+  local root="$PWD"
+  local agent="${AI_CODE_AGENT:-$DEFAULT_AI_CODE_AGENT}"
+  local agent_set=""
+  local mode="run"
+  local raw_command=""
+
+  while [ "$#" -gt 0 ]; do
+    case "$1" in
+      -C|--cd)
+        [ "$#" -ge 2 ] || die "$1 requires a directory"
+        root="$2"
+        shift 2
+        ;;
+      -a|--agent)
+        [ "$#" -ge 2 ] || die "$1 requires an agent name"
+        agent="$2"
+        agent_set="1"
+        shift 2
+        ;;
+      -h|--help)
+        usage
+        exit 0
+        ;;
+      --)
+        shift
+        raw_command="1"
+        break
+        ;;
+      resume)
+        mode="resume"
+        shift
+        break
+        ;;
+      --sandbox-agent)
+        die "--sandbox-agent must be the first argument"
+        ;;
+      -*)
+        break
+        ;;
+      *)
+        if [ -d "$1" ]; then
+          die "project directory is selected with -C/--cd, not a positional argument"
+        fi
+        if [ -z "$agent_set" ]; then
+          case "$1" in
+            codex|claude|opencode|hermes)
+              agent="$1"
+              agent_set="1"
+              shift
+              continue
+              ;;
+          esac
+        fi
+        break
+        ;;
+    esac
+  done
+
+  root="$(cd "$root" && pwd -P)"
+
+  local -a mapped=()
+  local item
+  if [ -n "$raw_command" ]; then
+    [ "$#" -gt 0 ] || die "-- requires a command"
+    mapped=("$@")
+  else
+    while IFS= read -r -d '' item; do
+      mapped+=("$item")
+    done < <(map_agent_command "$mode" "$agent" "$@")
+  fi
+
+  if [ "${#mapped[@]}" -eq 0 ]; then
+    mapped=("$agent")
+  fi
+
+  if [ -n "${AI_CODE_DEBUG_COMMAND:-}" ]; then
+    printf 'root=%s argv=%s\n' "$root" "$(quote_for_shell "${mapped[@]}")"
+    return 0
+  fi
+
+  exec "$0" --sandbox-agent "$root" -- "${mapped[@]}"
+}
+
+main() {
+  if [ "${1:-}" = "--sandbox-agent" ]; then
+    shift
+    run_sandbox_agent "$@"
+  fi
+
+  parse_main "$@"
+}
+
+main "$@"
