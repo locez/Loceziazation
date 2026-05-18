@@ -1,0 +1,4 @@
+#!/usr/bin/env bash
+set -euo pipefail
+
+exec nvim -R -M -n -i NONE  "${1:-.}"

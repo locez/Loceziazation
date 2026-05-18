@@ -1,0 +1,30 @@
+#!/usr/bin/env bash
+set -euo pipefail
+
+DEFAULT_AI_CODE_AGENT="codex"
+DEFAULT_AI_CODE_VIEWER="nvview ."
+
+root="${1:-$PWD}"
+root="$(cd "$root" && pwd)"
+project="$(basename "$root" | tr -c 'A-Za-z0-9_.-' '-')"
+session="ai-${project}"
+agent_command="${AI_CODE_AGENT:-$DEFAULT_AI_CODE_AGENT}"
+viewer_command="${AI_CODE_VIEWER:-$DEFAULT_AI_CODE_VIEWER}"
+
+if ! tmux has-session -t "$session" 2>/dev/null; then
+  tmux new-session -d -s "$session" -c "$root" -n ai
+  tmux send-keys -t "$session:ai" "$agent_command" C-m
+
+  tmux new-window -t "$session" -c "$root" -n code
+  tmux send-keys -t "$session:code" "$viewer_command" C-m
+
+  tmux new-window -t "$session" -c "$root" -n run
+
+  tmux select-window -t "$session:ai"
+fi
+
+if [ -n "${TMUX:-}" ]; then
+  tmux switch-client -t "$session"
+else
+  exec tmux attach -t "$session"
+fi
