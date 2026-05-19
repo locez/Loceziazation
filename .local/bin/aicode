@@ -86,9 +86,16 @@ append_bind_file() {
 
 read_mise_path() {
   local root="$1"
-  local mise_bin="${MISE_BIN:-$HOME/.local/bin/mise}"
+  local mise_bin=""
   local line path
 
+  if [ -n "${MISE_BIN:-}" ]; then
+    mise_bin="$MISE_BIN"
+  else
+    mise_bin="$(command -v mise 2>/dev/null || true)"
+  fi
+
+  [ -n "$mise_bin" ] || return 1
   [ -x "$mise_bin" ] || return 1
   while IFS= read -r line; do
     case "$line" in
@@ -107,7 +114,7 @@ read_mise_path() {
 
 build_path() {
   local root="$1"
-  local base_path="$HOME/.local/bin:/usr/local/sbin:/usr/local/bin:/usr/bin:/opt/bin:/usr/lib/llvm/21/bin:/opt/cuda/bin"
+  local base_path="$HOME/.local/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/opt/bin:/usr/lib/llvm/21/bin:/opt/cuda/bin"
   local mise_path
 
   if mise_path="$(read_mise_path "$root")" && [ -n "$mise_path" ]; then
