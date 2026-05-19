@@ -99,13 +99,13 @@ read_mise_path() {
   [ -x "$mise_bin" ] || return 1
   while IFS= read -r line; do
     case "$line" in
-      export\ PATH=*)
-        path="${line#export PATH=}"
-        path="${path%\'}"
-        path="${path#\'}"
-        printf '%s\n' "$path"
-        return 0
-        ;;
+    export\ PATH=*)
+      path="${line#export PATH=}"
+      path="${path%\'}"
+      path="${path#\'}"
+      printf '%s\n' "$path"
+      return 0
+      ;;
     esac
   done < <("$mise_bin" env -s bash -C "$root" 2>/dev/null || true)
 
@@ -167,7 +167,7 @@ append_common_mounts() {
     while IFS= read -r extra; do
       [ -n "$extra" ] || continue
       append_bind_dir "$argv_name" "$extra"
-    done <<< "${AI_CODE_EXTRA_BIND//$'\n'/$'\n'}"
+    done <<<"${AI_CODE_EXTRA_BIND//$'\n'/$'\n'}"
   fi
 }
 
@@ -188,10 +188,10 @@ append_runtime_integration_mounts() {
 
   if [ -n "${DBUS_SESSION_BUS_ADDRESS:-}" ]; then
     case "$DBUS_SESSION_BUS_ADDRESS" in
-      unix:path=*)
-        dbus_path="${DBUS_SESSION_BUS_ADDRESS#unix:path=}"
-        append_bind_file "$argv_name" "$dbus_path" "$dbus_path"
-        ;;
+    unix:path=*)
+      dbus_path="${DBUS_SESSION_BUS_ADDRESS#unix:path=}"
+      append_bind_file "$argv_name" "$dbus_path" "$dbus_path"
+      ;;
     esac
   fi
 
@@ -215,8 +215,7 @@ append_host_env() {
     DESKTOP_SESSION \
     DBUS_SESSION_BUS_ADDRESS \
     SSH_AUTH_SOCK \
-    GPG_TTY
-  do
+    GPG_TTY; do
     value="${!env_name-}"
     [ -n "$value" ] || continue
     argv+=(--setenv "$env_name" "$value")
@@ -329,45 +328,45 @@ map_agent_command() {
   fi
 
   case "$agent" in
-    codex)
-      printf '%s\0' codex resume
-      if [ -n "$session_id" ]; then
-        printf '%s\0' "$session_id"
-      else
-        printf '%s\0' --last
-      fi
-      ;;
-    claude)
-      printf '%s\0' claude
-      if [ -n "$session_id" ]; then
-        printf '%s\0' --resume "$session_id"
-      else
-        printf '%s\0' --continue
-      fi
-      ;;
-    opencode)
-      printf '%s\0' opencode
-      if [ -n "$session_id" ]; then
-        printf '%s\0' --session "$session_id"
-      else
-        printf '%s\0' --continue
-      fi
-      ;;
-    hermes)
-      printf '%s\0' hermes
-      if [ -n "$session_id" ]; then
-        printf '%s\0' --resume "$session_id"
-      else
-        printf '%s\0' --continue
-      fi
-      ;;
-    *)
-      if [ -n "$session_id" ]; then
-        printf '%s\0' "$agent" resume "$session_id"
-      else
-        printf '%s\0' "$agent" resume
-      fi
-      ;;
+  codex)
+    printf '%s\0' codex resume
+    if [ -n "$session_id" ]; then
+      printf '%s\0' "$session_id"
+    else
+      printf '%s\0' --last
+    fi
+    ;;
+  claude)
+    printf '%s\0' claude
+    if [ -n "$session_id" ]; then
+      printf '%s\0' --resume "$session_id"
+    else
+      printf '%s\0' --continue
+    fi
+    ;;
+  opencode)
+    printf '%s\0' opencode
+    if [ -n "$session_id" ]; then
+      printf '%s\0' --session "$session_id"
+    else
+      printf '%s\0' --continue
+    fi
+    ;;
+  hermes)
+    printf '%s\0' hermes
+    if [ -n "$session_id" ]; then
+      printf '%s\0' --resume "$session_id"
+    else
+      printf '%s\0' --continue
+    fi
+    ;;
+  *)
+    if [ -n "$session_id" ]; then
+      printf '%s\0' "$agent" resume "$session_id"
+    else
+      printf '%s\0' "$agent" resume
+    fi
+    ;;
   esac
 
   print_nul_args "$@"
@@ -382,53 +381,53 @@ parse_main() {
 
   while [ "$#" -gt 0 ]; do
     case "$1" in
-      -C|--cd)
-        [ "$#" -ge 2 ] || die "$1 requires a directory"
-        root="$2"
-        shift 2
-        ;;
-      -a|--agent)
-        [ "$#" -ge 2 ] || die "$1 requires an agent name"
-        agent="$2"
-        agent_set="1"
-        shift 2
-        ;;
-      -h|--help)
-        usage
-        exit 0
-        ;;
-      --)
-        shift
-        raw_command="1"
-        break
-        ;;
-      resume)
-        mode="resume"
-        shift
-        break
-        ;;
-      --sandbox-agent)
-        die "--sandbox-agent must be the first argument"
-        ;;
-      -*)
-        break
-        ;;
-      *)
-        if [ -d "$1" ]; then
-          die "project directory is selected with -C/--cd, not a positional argument"
-        fi
-        if [ -z "$agent_set" ]; then
-          case "$1" in
-            codex|claude|opencode|hermes)
-              agent="$1"
-              agent_set="1"
-              shift
-              continue
-              ;;
-          esac
-        fi
-        break
-        ;;
+    -C | --cd)
+      [ "$#" -ge 2 ] || die "$1 requires a directory"
+      root="$2"
+      shift 2
+      ;;
+    -a | --agent)
+      [ "$#" -ge 2 ] || die "$1 requires an agent name"
+      agent="$2"
+      agent_set="1"
+      shift 2
+      ;;
+    -h | --help)
+      usage
+      exit 0
+      ;;
+    --)
+      shift
+      raw_command="1"
+      break
+      ;;
+    resume)
+      mode="resume"
+      shift
+      break
+      ;;
+    --sandbox-agent)
+      die "--sandbox-agent must be the first argument"
+      ;;
+    -*)
+      break
+      ;;
+    *)
+      if [ -d "$1" ]; then
+        die "project directory is selected with -C/--cd, not a positional argument"
+      fi
+      if [ -z "$agent_set" ]; then
+        case "$1" in
+        codex | claude | opencode | hermes)
+          agent="$1"
+          agent_set="1"
+          shift
+          continue
+          ;;
+        esac
+      fi
+      break
+      ;;
     esac
   done
 
