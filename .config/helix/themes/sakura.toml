@@ -1,0 +1,196 @@
+inherits = "catppuccin_mocha"
+
+# Sakura Pop: bright girl-pink accents with Zed-like pale pink UI panels.
+
+# Syntax
+"attribute" = "rose"
+
+"type" = "lilac"
+"type.enum.variant" = "sakura"
+
+"constructor" = "lilac"
+
+"constant" = "peach"
+"constant.numeric" = "gold"
+"constant.builtin" = "gold"
+"constant.builtin.boolean" = "peach"
+"constant.character" = "mint"
+"constant.character.escape" = "hot_pink"
+"constant.other.color" = "sakura"
+
+"string" = "mint"
+"string.regexp" = "mint"
+"string.special" = "rose"
+"string.special.symbol" = "hot_pink"
+
+"comment" = { fg = "muted_rose", modifiers = ["italic"] }
+
+"variable" = "soft_text"
+"variable.parameter" = { fg = "rose", modifiers = ["italic"] }
+"variable.builtin" = "hot_pink"
+"variable.other.member" = "petal_text"
+
+"label" = "lilac"
+
+"punctuation" = "subtext0"
+"punctuation.special" = "hot_pink"
+
+"keyword" = { fg = "hot_pink", modifiers = ["bold"] }
+"keyword.control.conditional" = { fg = "hot_pink", modifiers = ["italic"] }
+"keyword.control.return" = { fg = "hot_pink", modifiers = ["bold"] }
+"operator" = "subtext1"
+
+"function" = "hot_pink"
+"function.macro" = "hot_pink"
+
+"tag" = "sakura"
+"namespace" = { fg = "rose", modifiers = ["italic"] }
+"special" = "sakura"
+
+"markup.heading.1" = "hot_pink"
+"markup.heading.2" = "sakura"
+"markup.heading.3" = "peach"
+"markup.heading.4" = "mint"
+"markup.heading.5" = "blue"
+"markup.heading.6" = "lilac"
+"markup.list" = "hot_pink"
+"markup.list.unchecked" = "muted_rose"
+"markup.list.checked" = "mint"
+"markup.bold" = { fg = "hot_pink", modifiers = ["bold"] }
+"markup.italic" = { fg = "hot_pink", modifiers = ["italic"] }
+"markup.link.url" = { fg = "blue", modifiers = ["italic", "underlined"] }
+"markup.link.text" = "sakura"
+"markup.link.label" = "lilac"
+"markup.raw" = "mint"
+"markup.quote" = "petal_text"
+
+"diff.plus" = "mint"
+"diff.minus" = "red"
+"diff.delta" = "blue"
+
+# User interface
+"ui.background" = { fg = "text" }
+"ui.background.separator" = { fg = "petal_edge" }
+
+"ui.linenr" = { fg = "line_nr" }
+"ui.linenr.selected" = { fg = "sakura", modifiers = ["bold"] }
+"ui.gutter" = { fg = "line_nr" }
+
+"ui.statusline" = { fg = "berry", bg = "petal" }
+"ui.statusline.inactive" = { fg = "muted_rose", bg = "petal_soft" }
+"ui.statusline.normal" = { fg = "berry", bg = "sakura", modifiers = ["bold"] }
+"ui.statusline.insert" = { fg = "berry", bg = "mint", modifiers = ["bold"] }
+"ui.statusline.select" = { fg = "berry", bg = "lilac", modifiers = ["bold"] }
+
+"ui.popup" = { fg = "menu_fg", bg = "menu_bg" }
+"ui.window" = { fg = "menu_border" }
+"ui.help" = { fg = "menu_fg", bg = "menu_bg" }
+
+"ui.bufferline" = { fg = "berry", bg = "petal_soft" }
+"ui.bufferline.active" = { fg = "hot_pink", bg = "petal", modifiers = ["bold"], underline = { color = "hot_pink", style = "line" } }
+"ui.bufferline.background" = { bg = "petal_soft" }
+
+"ui.text" = "text"
+"ui.text.focus" = { fg = "menu_focus_fg", bg = "menu_selected", modifiers = ["bold"] }
+"ui.text.info" = { fg = "menu_fg", bg = "menu_bg" }
+"ui.text.inactive" = { fg = "muted_rose" }
+"ui.text.directory" = { fg = "sakura", modifiers = ["bold"] }
+
+"ui.virtual" = "overlay0"
+"ui.virtual.ruler" = { bg = "cursorline" }
+"ui.virtual.indent-guide" = "surface0"
+"ui.virtual.whitespace" = "surface1"
+"ui.virtual.inlay-hint" = { fg = "muted_rose", bg = "mantle" }
+"ui.virtual.jump-label" = { fg = "hot_pink", modifiers = ["bold", "italic"] }
+
+"ui.selection" = { bg = "selection" }
+"ui.selection.primary" = { bg = "selection_primary" }
+
+"ui.cursor" = { fg = "berry", bg = "secondary_cursor" }
+"ui.cursor.primary" = { fg = "berry", bg = "hot_pink" }
+"ui.cursor.match" = { fg = "gold", modifiers = ["bold"] }
+
+"ui.cursor.primary.normal" = { fg = "berry", bg = "hot_pink" }
+"ui.cursor.primary.insert" = { fg = "berry", bg = "mint" }
+"ui.cursor.primary.select" = { fg = "berry", bg = "lilac" }
+
+"ui.cursor.normal" = { fg = "berry", bg = "secondary_cursor_normal" }
+"ui.cursor.insert" = { fg = "berry", bg = "secondary_cursor_insert" }
+"ui.cursor.select" = { fg = "berry", bg = "secondary_cursor_select" }
+
+"ui.cursorline.primary" = { bg = "cursorline" }
+"ui.highlight" = { bg = "highlight", modifiers = ["bold"] }
+
+"ui.menu" = { fg = "menu_fg", bg = "menu_bg" }
+"ui.menu.selected" = { fg = "menu_focus_fg", bg = "menu_selected", modifiers = ["bold"] }
+"ui.menu.scroll" = { fg = "hot_pink", bg = "menu_selected" }
+
+"diagnostic.error" = { underline = { color = "red", style = "curl" } }
+"diagnostic.warning" = { underline = { color = "gold", style = "curl" } }
+"diagnostic.info" = { underline = { color = "sky", style = "curl" } }
+"diagnostic.hint" = { underline = { color = "mint", style = "curl" } }
+"diagnostic.unnecessary" = { modifiers = ["dim"] }
+
+"error" = "red"
+"warning" = "gold"
+"info" = "sky"
+"hint" = "mint"
+
+[palette]
+rosewater = "#ffd6e8"
+flamingo = "#ffc4df"
+pink = "#ff8fc7"
+mauve = "#d7adff"
+red = "#ff6f9f"
+maroon = "#ff98b8"
+peach = "#ffb07c"
+yellow = "#f4c95e"
+green = "#8be6c5"
+teal = "#8fe9dd"
+sky = "#8bdcff"
+sapphire = "#8fbfff"
+blue = "#86a9ff"
+lavender = "#d3b4ff"
+
+text = "#f9e5ee"
+soft_text = "#f4cfe1"
+subtext1 = "#efbed7"
+subtext0 = "#dba5bf"
+overlay2 = "#bc8fa6"
+overlay1 = "#a57990"
+overlay0 = "#8c687a"
+surface2 = "#65485a"
+surface1 = "#513947"
+surface0 = "#3a2b35"
+base = "#241b23"
+mantle = "#2a2028"
+crust = "#181116"
+
+hot_pink = "#ff7fbd"
+sakura = "#ff9acc"
+rose = "#ffb0d3"
+petal_text = "#ffd4e7"
+lilac = "#cfa8ff"
+mint = "#9bf0dc"
+gold = "#f3c44f"
+berry = "#4a2033"
+petal = "#ffe0ef"
+petal_soft = "#fff2f8"
+petal_edge = "#ff9bd0"
+menu_bg = "#fff3f9"
+menu_fg = "#c34587"
+menu_focus_fg = "#6f1f49"
+menu_key = "#ff73bb"
+menu_selected = "#ffd1e8"
+menu_border = "#e84fa0"
+muted_rose = "#c48aa8"
+line_nr = "#b06f92"
+selection = "#6f4a62"
+selection_primary = "#875574"
+cursorline = "#3b2b37"
+highlight = "#56384d"
+
+secondary_cursor = "#ffc4df"
+secondary_cursor_select = "#d6b0ff"
+secondary_cursor_normal = "#ffc4df"
+secondary_cursor_insert = "#91ead3"

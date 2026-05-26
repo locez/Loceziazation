@@ -1,0 +1,167 @@
+# ==========================================
+# Python
+# Pyright: 补全、跳转、引用、rename、类型分析
+# Ruff: lint、code action、格式化
+# 依赖: uv tool install pyright ruff
+# uv 项目建议在项目 pyproject.toml 中配置:
+# [tool.pyright]
+# venvPath = "."
+# venv = ".venv"
+# ==========================================
+[[language]]
+name = "python"
+language-servers = [
+  { name = "pyright", except-features = ["format"] },
+  { name = "ruff", only-features = ["diagnostics", "code-action"] },
+]
+formatter = { command = "ruff", args = ["format", "--stdin-filename", "%{buffer_name}", "-"] }
+auto-format = true
+
+[language-server.pyright]
+command = "pyright-langserver"
+args = ["--stdio"]
+
+[language-server.pyright.config.python.analysis]
+typeCheckingMode = "basic"
+autoSearchPaths = true
+useLibraryCodeForTypes = true
+
+[language-server.ruff]
+command = "ruff"
+args = ["server"]
+
+# ==========================================
+# Rust (默认开箱即用，主要开启高级 Inlay Hints)
+# 依赖: rustup component add rust-analyzer
+# ==========================================
+[[language]]
+name = "rust"
+auto-format = true
+
+[language-server.rust-analyzer.config.rust-analyzer]
+cargo.buildScripts.enable = true
+inlayHints.bindingModeHints.enable = true
+inlayHints.closureReturnTypeHints.enable = "with_block"
+inlayHints.lifetimeElisionHints.enable = "skip_trivial"
+inlayHints.typeHints.hideNamedConstructor = true
+
+# ==========================================
+# Shell
+# 依赖: npm i -g bash-language-server && go install mvdan.cc/sh/v3/cmd/shfmt@latest
+# ==========================================
+[[language]]
+name = "bash"
+language-servers = ["bash-language-server"]
+formatter = { command = "shfmt", args = ["-i", "2", "-"] }
+auto-format = false
+
+# ==========================================
+# Markdown
+# 依赖: npm i -g marksman prettier
+# ==========================================
+[[language]]
+name = "markdown"
+language-servers = ["marksman"]
+formatter = { command = "prettier", args = ["--parser", "markdown"] }
+auto-format = false
+
+# ==========================================
+# Web / Frontend
+# 依赖: npm i -g typescript typescript-language-server vscode-langservers-extracted prettier
+# ==========================================
+[[language]]
+name = "html"
+language-servers = ["vscode-html-language-server"]
+formatter = { command = "prettier", args = ["--parser", "html"] }
+auto-format = false
+
+[[language]]
+name = "css"
+language-servers = ["vscode-css-language-server"]
+formatter = { command = "prettier", args = ["--parser", "css"] }
+auto-format = false
+
+[[language]]
+name = "scss"
+language-servers = ["vscode-css-language-server"]
+formatter = { command = "prettier", args = ["--parser", "scss"] }
+auto-format = false
+
+[[language]]
+name = "javascript"
+language-servers = ["typescript-language-server"]
+formatter = { command = "prettier", args = ["--parser", "babel"] }
+auto-format = false
+
+[[language]]
+name = "jsx"
+language-servers = ["typescript-language-server"]
+formatter = { command = "prettier", args = ["--parser", "babel"] }
+auto-format = false
+
+[[language]]
+name = "typescript"
+language-servers = ["typescript-language-server"]
+formatter = { command = "prettier", args = ["--parser", "typescript"] }
+auto-format = false
+
+[[language]]
+name = "tsx"
+language-servers = ["typescript-language-server"]
+formatter = { command = "prettier", args = ["--parser", "typescript"] }
+auto-format = false
+
+[[language]]
+name = "json"
+language-servers = ["vscode-json-language-server"]
+formatter = { command = "prettier", args = ["--parser", "json"] }
+auto-format = false
+
+[[language]]
+name = "jsonc"
+language-servers = ["vscode-json-language-server"]
+formatter = { command = "prettier", args = ["--parser", "jsonc"] }
+auto-format = false
+
+# ==========================================
+# Config files
+# 依赖: cargo install taplo-cli && npm i -g yaml-language-server prettier
+# ==========================================
+[[language]]
+name = "toml"
+language-servers = ["taplo"]
+formatter = { command = "taplo", args = ["format", "-"] }
+auto-format = false
+
+[[language]]
+name = "yaml"
+language-servers = ["yaml-language-server"]
+formatter = { command = "prettier", args = ["--parser", "yaml"] }
+auto-format = false
+
+# ==========================================
+# Containers
+# 依赖: npm i -g dockerfile-language-server-nodejs
+# ==========================================
+[[language]]
+name = "dockerfile"
+language-servers = ["docker-langserver"]
+auto-format = false
+
+# ==========================================
+# Go
+# 依赖: go install golang.org/x/tools/gopls@latest
+# ==========================================
+[[language]]
+name = "go"
+language-servers = ["gopls"]
+auto-format = false
+
+# ==========================================
+# Lua
+# 依赖: mise use -g lua-language-server@latest 或系统包管理器安装
+# ==========================================
+[[language]]
+name = "lua"
+language-servers = ["lua-language-server"]
+auto-format = false

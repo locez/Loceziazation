@@ -1,0 +1,44 @@
+# 主题推荐：Helix 内置了非常多优秀主题，catppuccin_mocha 或 autumn_night 都不错
+theme = "sakura"
+
+[editor]
+line-number = "relative"      # 相对行号，配合数字跳转非常高效
+mouse = true                  # 允许鼠标支持（在 Tmux 下依然生效）
+auto-save = true              # 失去焦点或终端切换时自动保存
+color-modes = true            # 状态栏根据模式变色
+cursorline = true             # 高亮当前行
+bufferline = "multiple"       # 顶部显示 Buffer 栏（类似 LazyVim 的 bufferline.nvim）
+idle-timeout = 50             # 降低 LSP 悬浮窗和自动补全的触发延迟（默认 400ms）
+completion-trigger-len = 1    # 输入 1 个字符即触发补全
+
+[editor.cursor-shape]
+# 根据模式改变光标形状，终端需支持（Alacritty 原生支持）
+insert = "bar"
+normal = "block"
+select = "underline"
+
+[editor.file-picker]
+hidden = false                # 搜索时包含隐藏文件（如 .gitignore 之外的 .env 等）
+
+[editor.indent-guides]
+render = true                 # 开启缩进对齐线
+character = "┊"               # 更美观的缩进符号
+
+[editor.lsp]
+display-messages = true       # 状态栏显示 LSP 加载进度
+display-inlay-hints = true    # 开启内联类型提示（对 Rust 和 Python 极度友好）
+
+[editor.statusline]
+left = ["mode", "spinner"]
+center = ["file-name"]
+right = ["diagnostics", "selections", "position", "file-encoding", "file-line-ending", "file-type"]
+separator = "│"
+mode.normal = "NORMAL"
+mode.insert = "INSERT"
+mode.select = "SELECT"
+
+[keys.normal]
+# 还原部分类似 Neovim 的按键直觉
+"H" = "goto_previous_buffer"  # Shift-H 切换到左边的 Buffer
+"L" = "goto_next_buffer"      # Shift-L 切换到右边的 Buffer
+"esc" = ["collapse_selection", "keep_primary_selection"] # ESC 取消多重光标并保留主光标
