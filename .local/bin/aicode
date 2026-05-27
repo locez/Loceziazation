@@ -134,7 +134,6 @@ append_common_mounts() {
 
   append_bind_dir "$argv_name" "$HOME/.local/bin"
   append_bind_dir "$argv_name" "$HOME/.local/share/mise"
-  append_bind_dir "$argv_name" "$HOME/.config"
   append_bind_dir "$argv_name" "$HOME/.cache"
   append_bind_dir "$argv_name" "$HOME/.local/share"
   append_bind_dir "$argv_name" "$HOME/.gnupg"
