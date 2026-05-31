@@ -2,7 +2,7 @@
 set -euo pipefail
 
 DEFAULT_AI_CODE_AGENT="codex"
-DEFAULT_AI_CODE_VIEWER="nvview ."
+DEFAULT_AI_CODE_VIEWER="hx"
 
 die() {
   printf 'aiws: %s\n' "$*" >&2
