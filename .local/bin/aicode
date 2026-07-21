@@ -114,11 +114,12 @@ read_mise_path() {
 
 build_path() {
   local root="$1"
-  local base_path="$HOME/.local/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/opt/bin:/usr/lib/llvm/21/bin:/opt/cuda/bin"
+  local nix_path="$HOME/.nix-profile/bin:/nix/var/nix/profiles/default/bin"
+  local base_path="$HOME/.local/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/opt/bin:/usr/lib/llvm/21/bin:/opt/cuda/bin:$nix_path"
   local mise_path
 
   if mise_path="$(read_mise_path "$root")" && [ -n "$mise_path" ]; then
-    printf '%s\n' "$mise_path"
+    printf '%s:%s\n' "$mise_path" "$nix_path"
   else
     printf '%s\n' "$base_path"
   fi
@@ -131,6 +132,8 @@ append_common_mounts() {
   append_bind_file "$argv_name" "$HOME/.gitconfig"
   append_bind_file "$argv_name" "$HOME/.git-credentials"
   append_bind_file "$argv_name" "$HOME/.git-allowed-signers"
+  append_bind_file "$argv_name" "$HOME/.ssh/known_hosts"
+  append_bind_file "$argv_name" "$HOME/.config/gh/hosts.yml"
 
   append_bind_dir "$argv_name" "$HOME/.local/bin"
   append_bind_dir "$argv_name" "$HOME/.local/share/mise"
@@ -270,6 +273,7 @@ run_sandbox_agent() {
     --ro-bind-try /lib /lib
     --ro-bind-try /lib64 /lib64
     --ro-bind-try /opt /opt
+    --ro-bind-try /nix /nix
     --dir /etc
     --tmpfs "$sandbox_home"
     --dir "$sandbox_home/.cache"
@@ -294,6 +298,8 @@ run_sandbox_agent() {
   append_bind_dir bwrap_args /etc/ssl /etc/ssl ro
   append_bind_dir bwrap_args /etc/ca-certificates /etc/ca-certificates ro
   append_bind_dir bwrap_args /etc/pki /etc/pki ro
+  append_bind_dir bwrap_args /var/db/repos /var/db/repos ro
+  append_bind_dir bwrap_args "$HOME/.nix-profile" "$HOME/.nix-profile" ro
   append_common_mounts bwrap_args
   append_runtime_integration_mounts bwrap_args
   append_bind_dir bwrap_args "$root"
