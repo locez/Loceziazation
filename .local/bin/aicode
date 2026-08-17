@@ -144,6 +144,8 @@ append_common_mounts() {
   append_bind_dir "$argv_name" "$HOME/.codex"
   append_bind_dir "$argv_name" "$HOME/.claude"
   append_bind_dir "$argv_name" "$HOME/.gemini"
+  append_bind_dir "$argv_name" "$HOME/.dsh"
+  append_bind_dir "$argv_name" "$HOME/.npm"
   append_bind_dir "$argv_name" "$HOME/.config/gemini"
   append_bind_dir "$argv_name" "$HOME/.config/merry"
   append_bind_dir "$argv_name" "$HOME/.config/opencode"
